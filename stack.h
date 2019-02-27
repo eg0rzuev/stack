@@ -4,6 +4,8 @@
 
 #ifndef STACK_STACK_H
 #define STACK_STACK_H
+// Все константы в enum
+
 #include <iostream>
 #include <cstdlib>
 #define MULTIPLIER 2
@@ -12,9 +14,9 @@
 #define STACK_OVERFLOW -101
 #define STACK_UNDERFLOW -102
 #define SMALL_DIFFERENCE 3
-
+// сократить название типа stkElemT
 typedef int stackElementT;
-using namespace std;
+using namespace std; // удалить строку
 
 class Stack
 {
@@ -38,6 +40,6 @@ class Stack
     private:
         stackElementT*          data_;
         int                     top_;
-        int                     maxSize_;       //
+        int                     maxSize_;       // capacity
 };
 #endif //STACK_STACK_H
