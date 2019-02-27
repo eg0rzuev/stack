@@ -8,6 +8,9 @@
 //****************************************************
 
 // ! God save Vadim ^_^
+// прочитай мануал для doxygen
+// http://www.doxygen.nl/manual/index.html
+
 
 //****************************************************
 
@@ -27,7 +30,7 @@ Stack :: Stack():
         maxSize_(DEFAULT_SIZE),
         top_(-1)
 {
-    this -> data_ = (stackElementT *) malloc(DEFAULT_SIZE * sizeof(stackElementT));
+    this -> data_ = (stackElementT *) malloc(DEFAULT_SIZE * sizeof(stackElementT)); // calloc вместо malloc
     if(this -> data_ == NULL)
     {
         exit(OUT_OF_MEMORY);
@@ -67,6 +70,7 @@ Stack :: ~Stack() //destructor
 void Stack :: resize() // change size of stack
 {
     this -> data_ = (stackElementT *) realloc(this -> data_, maxSize_ * MULTIPLIER * sizeof(stackElementT));
+        // проверить возвращаемое значение
     //cout << "RESISE WORKS!" << endl;
     this -> maxSize_ *= MULTIPLIER;
     if(this -> data_ == NULL)
@@ -98,6 +102,7 @@ bool Stack :: needResizing()
 
 //****************************************************
 
+// проверки в getter-functions
 
 stackElementT Stack ::peek()
 {
