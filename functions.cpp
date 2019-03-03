@@ -1,213 +1,239 @@
-//Methods used in Stack
-//**************************
-// Created by egor on 2/26/19.
-//**************************
+/*!
+ * \file
+ * \brief fuction descriptions
+ * \author eg0rzuev
+ * \version 1.0
+ * \date March 2019 year
+ * \warning sorry for creepy code
+ *
+ * This file contains functions(methods) descriptions used in class Stack
+ * God save Vadim ^_^
+ */
 
 #include "stack.h"
 
-//****************************************************
-
-// ! God save Vadim ^_^
-
-//****************************************************
-
-// ! Here I create a quite nice Stack (constructor)
-
-// ! When created it has size of 10 elemets (DEFAULT_SIZE)
-
-// ! top -1 means it has no elements
-
-// ! Some space for array of elements is allocated by malloc to data_
-
-// ! If something goes wrong program shuts down
-
-//****************************************************
+/*!
+ * \brief Stack constructor
+ * When created it has size of 10 elemets (DEFAULT_SIZE)
+ * \
+ * top -1 means it has no elements
+ * \
+ * Some space for array of elements is allocated by calloc to data_
+ * \
+ * If something goes wrong program shuts down
+ */
 
 Stack :: Stack():
-        maxSize_(DEFAULT_SIZE),
+        capacity_(DEFAULT_SIZE),
         top_(-1)
 {
-    this -> data_ = (stackElementT *) malloc(DEFAULT_SIZE * sizeof(stackElementT));
+    this -> data_ = (stkElemT *) calloc(DEFAULT_SIZE * this -> capacity_, sizeof(stkElemT));
     if(this -> data_ == NULL)
     {
         exit(OUT_OF_MEMORY);
     }
 }
 
-//****************************************************
-
-// ! Here is what happens when stack dies (destructor)
-
-// ! When gone all the of the memory used frees
-
-// ! data_ pointer is set to NULL, top_ is -1 ('cause Stack is empty now)
-
-//****************************************************
+/*!
+ * \brief Stack destructor
+ * \
+ * When gone all the of the memory used frees
+ * \
+ * data_ pointer is set to NULL, top_ is -1 ('cause Stack is empty now)
+ * \
+ */
 
 Stack :: ~Stack() //destructor
 {
     free(this -> data_);
     this -> data_ = NULL;
-    this -> maxSize_ = 0;
+    this -> capacity_ = 0;
     this -> top_ = -1;
 }
 
-//****************************************************
+/*!
+ * \brief increases capasity_
+ * resize allows to put more elements into the Stack
+ * \
+ * realloc doubles size of data_ (MULTIPLIER == 2)
+ * \
+ * capacity_ is brand new now
+ * \
+ * \return error_ or 0
+ */
 
-// ! resize allows to put more elements into the Stack
-
-// ! realloc doubles size of data_ (MULTIPLIER == 2)
-
-// ! maxSize_ is brand new now
-
-// ! If something goes wrong program shuts down
-
-//****************************************************
-
-void Stack :: resize() // change size of stack
+int Stack :: resize() // change size of stack
 {
-    this -> data_ = (stackElementT *) realloc(this -> data_, maxSize_ * MULTIPLIER * sizeof(stackElementT));
-    //cout << "RESISE WORKS!" << endl;
-    this -> maxSize_ *= MULTIPLIER;
-    if(this -> data_ == NULL)
+    this -> data_ = (stkElemT *) realloc(this -> data_, capacity_ * MULTIPLIER * sizeof(stkElemT));
+
+    if (this -> data_ == NULL)
     {
-        exit(OUT_OF_MEMORY);
+        this -> error_ = OUT_OF_MEMORY;
+        this -> dump();
+        return this -> error_;
     }
+    //cout << "RESISE WORKS!" << endl;
+    this -> capacity_ *= MULTIPLIER;
+    return 0;
 }
 
-//****************************************************
-
-// ! needResising desides whether resize() is needed
-
-// ! if there is SMALL_DIFFERENCE == 3 betweem maxSize_ and top_
-
-// ! then resize() is needed
-
-//****************************************************
-
+/*!
+ * \brief decides whether Stack needs resizing or not
+ * \return true or false
+ */
 
 bool Stack :: needResizing()
 {
-    return (this -> maxSize_ - this -> top_) < SMALL_DIFFERENCE;
+    return (this -> capacity_ - this -> top_) < SMALL_DIFFERENCE;
 }
 
+/*!
+ * Checks whether Stack is Ok
+ * \return last element put in Stack or error_ code
+ */
 
-//****************************************************
-
-// ! Returns the last element put in stack
-
-//****************************************************
-
-
-stackElementT Stack ::peek()
+stkElemT Stack ::peek()
 {
+    if(this -> StackOk() == STACK_UNDERFLOW)
+    {
+        this -> dump();
+        return this -> error_;
+    }
     return this -> data_[top_];
 }
 
-
-//****************************************************
-
-// ! Returns number of elements in Stack minus one
-
-//****************************************************
-
+/*!
+ * \return top_ (number of elements in Stack minus one)
+ */
 
 int Stack ::getTop()
 {
     return this -> top_;
 }
 
-
-//****************************************************
-
-// ! Returns current maxSize_ ( capability ) of Stack
-
-//****************************************************
+/*!
+ * \return capacity_ of Stack
+ */
 
 int Stack :: getMaxSize()
 {
-    return this -> maxSize_;
+    return this -> capacity_;
 }
 
-
-//****************************************************
-
-// ! Pushes an element on top of a Stack
-
-// ! firstly is checks whether Stack needResizing
-
-// ! if it does resizes it
-
-// ! if stack is full and you push smth then program shuts down
-
-// ! top_ is incremented and element is pushed into Stack
-
-//****************************************************
-
-
-void Stack :: push(stackElementT element) //push element on Stack top
+/*!
+ * \brief push element on Stack top
+ * firstly is checks whether Stack needResizing, if it does resizes it
+ * \
+ * if stack is full and you push smth then program shuts down
+ * \
+ * top_ is incremented and element is pushed into Stack
+ * \param element nothing special
+ * \return
+ */
+int Stack :: push(stkElemT element) //
 {
     if(this -> needResizing())
     {
-        //cout << "IT DOES NEED RESIZING" << endl;
         this -> resize();
     }
 
-    if(this -> isStackFull())
+    /*if(this -> isStackFull())
     {
-        cout << "top is " << this -> getTop() << "maxSize is " << this -> getMaxSize() << endl;
-        cout << "so fcking strange" << endl;
         exit(STACK_OVERFLOW);
+    }*/
+
+    if(this -> StackOk() == STACK_OVERFLOW)
+    {
+        this -> dump();
+        return this -> error_;
     }
     this -> data_[++this -> top_] = element;
+    return 0;
 }
 
+/*!
+ * \brief pops element from stack
+ * \
+ * if it is empty program is shut down
+ * \
+ * top_ is decremented
+ * \return value of the element popped
+ */
 
-//****************************************************
-
-// ! pops element from stack
-
-// ! if it is empty program is shut down
-
-// ! top_ is decremented
-
-// ! returns value of the element popped
-
-//****************************************************
-
-
-stackElementT Stack :: pop() //pop element from stack top
+stkElemT Stack :: pop() //pop element from stack top
 {
-    if(this -> isStackEmpty())
+    if(this -> StackOk() == STACK_UNDERFLOW)
     {
-        //cout << "STACK IS EMPTY" << endl;
-        exit(STACK_UNDERFLOW);
+        this -> dump();
+        return this -> error_;
     }
+
     return this -> data_[this -> top_--];
 }
 
+/*!
+ * \brief checks whether stack is ok or not
+ * can say if Stacjk is empty or full
+ * @return error_ code or 1 (not quite sure about the last one)
+ */
 
-//****************************************************
-
-// ! checks whether stack is empty or not
-
-//****************************************************
-
-
-bool Stack :: isStackEmpty()
+int Stack::StackOk()
 {
-    return this -> top_ < 0;
+    if(this -> top_ < 0)
+    {
+        this -> error_ = STACK_UNDERFLOW;
+        return STACK_UNDERFLOW;
+    }
+
+    if((this -> top_ + 1) >= (this -> capacity_))
+    {
+        this -> error_ = STACK_OVERFLOW;
+        return STACK_OVERFLOW;
+    }
+    return 1;
+}
+
+/*!
+ * \brief Stack dump() functions
+ * \warning :)
+ * writes everything about Stack
+ * \
+ * State, error_, top_, capacity_, all of the elements inside it
+ * \return error_ code
+ */
+
+int Stack::dump()
+{
+    std::cout << std::endl;
+    std::cout << "*_* ''''''_____STACK_DUMP_____'''''' *_*" << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "  STATE = ";
+    if(!this -> StackOk())
+    {
+        std::cout << "INVALID" << std::endl;
+    }
+    else
+    {
+        std::cout <<   "OK!"    << std::endl;
+    }
+
+    std::cout << "  ERROR:      " << this -> error_ << std::endl;
+    std::cout << "  top_      = " << this -> top_ << std::endl;
+    std::cout << "  capacity_ = " << this -> capacity_ << std::endl;
+    std::cout << std::endl;
+
+    for (int i = 0; i <= this -> top_; i++)
+    {
+        std::cout <<  "  data_[" << i << "] = " << "data_[" << &data_[i] << "] = " << this -> data_[i] << std::endl;
+    }
+
+    std::cout << "........................................" << std::endl;
+    std::cout << std::endl;
+    return this -> error_;
 }
 
 
-//****************************************************
-
-// ! checks whether stack is full or not
-
-//****************************************************
 
 
-bool Stack :: isStackFull()
-{
-    return (this -> top_ + 1) >= (this -> maxSize_);
-}
+

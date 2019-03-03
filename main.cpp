@@ -7,14 +7,16 @@ int main()
 {
     Stack X;
    // cout << X.getMaxSize() << endl
+   std::cout<< X.peek() << std::endl;
         X.push(100);
         X.push(200);
         X.push(111);
+        X.dump();
        // X.~Stack();
 
-    cout <<X.pop() << endl;
-    cout <<X.pop() << endl;
-    cout <<X.pop() << endl;
+    std::cout <<X.pop() << std::endl;
+    std:: cout <<X.pop() << std::endl;
+    std::cout <<X.pop() <<std:: endl;
    // cout <<X.pop() << endl;
 
 
