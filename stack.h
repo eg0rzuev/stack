@@ -1,3 +1,7 @@
+
+#ifndef STACK_STACK_H
+#define STACK_STACK_H
+
 /*!
  * \file
  * \brief header file
@@ -10,14 +14,16 @@
  * ^_^ God save Vadim ^_^
  */
 
-#ifndef STACK_STACK_H
-#define STACK_STACK_H
+
 #include <iostream>
 #include <cstdlib>
 
 ///errors that can occur
 enum ERRORS
 {
+    OUT_OF_MEMORY  = 1;
+    STACK_OVERFLOW = 1 << 2;
+    STACK_OVERFLOW = 1 << 3;
     OUT_OF_MEMORY   = -100, ///something wrong happens with realloc(...)/calloc(...)
     STACK_OVERFLOW  = -101, ///stack is full and you try push(...) something
     STACK_UNDERFLOW = -102  ///stack is empty and you try to peek() or pop()
@@ -63,8 +69,8 @@ class Stack
         int                     resize();
         int                     getMaxSize();
         int                     getTop();
-        int                     StackOk();
-        int                     dump();
+        int                     StackOk(); // private
+        int                     dump();    // 
 
     private:
 
