@@ -27,7 +27,7 @@ Stack :: Stack():
         capacity_(DEFAULT_SIZE),
         top_(-1)
 {
-    this -> data_ = (stkElemT *) calloc(DEFAULT_SIZE * this -> capacity_, sizeof(stkElemT));
+    this -> data_ = (stkElemT *) calloc(DEFAULT_SIZE * this -> capacity_, sizeof(stkElemT)); /// new[]
     if(this -> data_ == NULL)
     {
         exit(OUT_OF_MEMORY);
@@ -45,7 +45,7 @@ Stack :: Stack():
 
 Stack :: ~Stack() //destructor
 {
-    free(this -> data_);
+    free(this -> data_); // delete[]
     this -> data_ = NULL;
     this -> capacity_ = 0;
     this -> top_ = -1;
@@ -64,7 +64,7 @@ Stack :: ~Stack() //destructor
 
 int Stack :: resize() // change size of stack
 {
-    this -> data_ = (stkElemT *) realloc(this -> data_, capacity_ * MULTIPLIER * sizeof(stkElemT));
+    this -> data_ = (stkElemT *) realloc(this -> data_, capacity_ * MULTIPLIER * sizeof(stkElemT)); // new[]
 
     if (this -> data_ == NULL)
     {
@@ -106,7 +106,7 @@ stkElemT Stack ::peek()
  * \return top_ (number of elements in Stack minus one)
  */
 
-int Stack ::getTop()
+const int Stack ::getTop() const
 {
     return this -> top_;
 }
@@ -115,7 +115,7 @@ int Stack ::getTop()
  * \return capacity_ of Stack
  */
 
-int Stack :: getMaxSize()
+const int Stack :: getMaxSize() const
 {
     return this -> capacity_;
 }
@@ -177,7 +177,7 @@ stkElemT Stack :: pop() //pop element from stack top
  * @return error_ code or 1 (not quite sure about the last one)
  */
 
-int Stack::StackOk()
+int Stack::StackOk() // are there all the errors you want to find in your stack???????
 {
     if(this -> top_ < 0)
     {
@@ -190,7 +190,10 @@ int Stack::StackOk()
         this -> error_ = STACK_OVERFLOW;
         return STACK_OVERFLOW;
     }
-    return 1;
+        // data
+        // capacity < 0
+        
+    return 0; // ?
 }
 
 /*!
