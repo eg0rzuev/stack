@@ -7,7 +7,6 @@
  * \warning sorry for creepy code
  *
  * This file contains functions(methods) descriptions used in class Stack
- * God save Vadim ^_^
  */
 
 #include "stack.h"
